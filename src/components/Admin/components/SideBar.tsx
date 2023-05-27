@@ -7,15 +7,15 @@ import { FiSettings } from "react-icons/fi";
 import { CiLogout } from "react-icons/ci";
 import If from "@/core/If";
 import { useRouter } from "next/router";
-import { AuthContext } from "@/core/contextApi/authContext";
 import {BsSendCheck} from 'react-icons/bs';
 import Logo from "@/components/Logo";
+import { AdminContext } from "@/core/contextApi/adminContext";
 
 const Links = [
   {
     label: "Dashoard",
     icon: <RxDashboard size={23} />,
-    link: "/dashboard",
+    link: "/admin",
     type: "link",
   },
   {
@@ -25,15 +25,9 @@ const Links = [
     type: "link",
   },
   {
-    label: "Cart",
-    icon: <AiOutlineShoppingCart size={23} />,
-    link: "/cart",
-    type: "link",
-  },
-  {
     label: "Orders",
     icon: <BsSendCheck size={23} />,
-    link: "/orders",
+    link: "/admin/orders",
     type: "link",
   },
   {
@@ -48,7 +42,7 @@ const SideBar = () => {
   const router = useRouter();
   const [activepath, setActivePath] = useState<any>(null);
   const { pathname } = router;
-  const {setLoggingOut}=useContext(AuthContext);
+  const {setLoggingOut}=useContext(AdminContext);
 
   useEffect(() => {
     if (pathname) {
@@ -64,7 +58,7 @@ const SideBar = () => {
   const handleLogout = async () =>{
     setLoggingOut(true);
     setTimeout(() => {
-      router.push('/auth/sign-in')
+      router.push('/admin/sign-in')
     }, 1000);
   }
 

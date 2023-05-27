@@ -9,7 +9,13 @@ const Cart = () => {
   return (
     <RouteShell title="Cart">
       <CartPageGuard>
-        <CartItemsContainer Items={Items} classNames="" ItemsContainerClassNames="h-screen overflow-scroll"/>
+        <CartItemsContainer
+          Items={Items}
+          classNames=""
+          ItemsContainerClassNames={`${
+            Items?.length > 4 ? "h-screen overflow-y-scroll" : ""
+          }`}
+        />
       </CartPageGuard>
     </RouteShell>
   );

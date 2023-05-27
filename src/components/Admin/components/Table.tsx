@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import If from "@/core/If";
 import Avatar from "@/components/Avatar";
 import Modle from "./Modle";
 import { MdDelete } from "react-icons/md";
 import DeleteUserForm from "./DeleteUserForm";
+import { AdminContext } from "@/core/contextApi/adminContext";
 
 type Props = {
   data: any;
@@ -13,6 +14,8 @@ type Props = {
 };
 
 const Table = ({ data, tablefor, col }: Props) => {
+  const { adminData } = useContext(AdminContext);
+
   return (
     <table className="table-auto flex flex-col">
       <thead className="text-xs font-semibold uppercase">
@@ -75,15 +78,19 @@ const Table = ({ data, tablefor, col }: Props) => {
                   </td>
                 </If>
                 <If condition={tablefor === "admins"}>
-                  <If condition={item?.role !== "super_admin"}>
-                    <td className="relative">
-                      <Modle
-                        icon={<MdDelete size={18} />}
-                        iconclassnames="absolute right-1 cursor-pointer -top-2 h-6 w-6 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200"
-                      >
-                        <DeleteUserForm data={item} />
-                      </Modle>
-                    </td>
+                  <If condition={adminData?.role === "super_admin"}>
+                    <If condition={item?.role !== "super_admin"}>
+                      <If condition={item?.email !== adminData?.email}>
+                        <td className="relative">
+                          <Modle
+                            icon={<MdDelete size={18} />}
+                            iconclassnames="absolute right-1 cursor-pointer -top-2 h-6 w-6 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200"
+                          >
+                            <DeleteUserForm data={item} />
+                          </Modle>
+                        </td>
+                      </If>
+                    </If>
                   </If>
                 </If>
               </tr>

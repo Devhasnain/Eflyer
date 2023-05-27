@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import CloseBackHome from "@/components/auth/CloseBackHome";
 import Configrations from "@/configrations";
 import { AdminSignin } from "@/lib/Apiscalls";
@@ -12,7 +12,7 @@ import { AdminContext } from "@/core/contextApi/adminContext";
 
 const AdminAuthContainer = () => {
   const [loading, setLoading] = useState(false);
-  const { setadminData, setIsLoggedIn } = useContext(AdminContext);
+  const { setadminData, setIsLoggedIn, adminData } = useContext(AdminContext);
   const router = useRouter();
   const { register, reset, handleSubmit } = useForm({
     defaultValues: { email: "", password: "" },
@@ -36,6 +36,25 @@ const AdminAuthContainer = () => {
       toast.error(submit?.message);
     }
   };
+
+  useEffect(() => {
+    if (!adminData) {
+      let trysignin = async () => {
+        let signin = await AdminSignin();
+        if(signin.status){
+          setadminData(signin?.data);
+          setIsLoggedIn(true);
+          localStorage.setItem("admin_data", JSON.stringify(signin?.data));
+          Cookies.set("accesstoken", signin?.accesstoken);
+          localStorage.removeItem("user_data");
+          Cookies.remove("secret");
+          router.push('/admin');
+        }
+      };
+      trysignin();
+    }
+  }, []);
+
   return (
     <>
       <Head>

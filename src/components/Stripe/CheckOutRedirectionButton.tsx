@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Divider from "@/core/Divider";
 import If from "@/core/If";
 import { AuthContext } from "@/core/contextApi/authContext";
@@ -9,10 +9,12 @@ import Configrations from "@/configrations";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { BeatLoader } from "react-spinners";
 
 const stripePromise = loadStripe(Configrations.stripe_public_key);
 
 const CheckOutRedirectionButton = () => {
+  const [loading,setLoading]=useState(false);
   const SiteUrl = Configrations.site.url;
   const router = useRouter();
   let pathname = router.pathname;
@@ -20,6 +22,7 @@ const CheckOutRedirectionButton = () => {
   const cartItems = useAppSelector((state) => state.ProductState.cartItems);
   const secret = Cookies.get("secret");
   const handleCheckout = async () => {
+    setLoading(true)
     const stripe: Stripe | null = await stripePromise;
     if (userData) {
       const response = await axios.post(
@@ -39,13 +42,12 @@ const CheckOutRedirectionButton = () => {
           sessionId: session.id,
         });
 
-        console.log(result)
-
         if (result.error) {
           console.error(result.error.message);
         }
       }
     }
+    setLoading(false)
   };
 
   return (
@@ -56,7 +58,7 @@ const CheckOutRedirectionButton = () => {
           className="font-semibold px-8 text-white py-2.5 bg-yellow-500 rounded"
           onClick={handleCheckout}
         >
-          Checkout
+         {loading?<BeatLoader color="white" size={8}/>:'Checkout'}
         </button>
       </If>
       <If condition={!isLoggedIn}>

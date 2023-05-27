@@ -43,8 +43,8 @@ const CreateUserForm = () => {
       reset();
     } else {
       setLoading(false);
-      if (submit.response.data.msg) {
-        toast.error(submit.response.data.msg);
+      if (submit?.response?.data?.msg) {
+        toast.error(submit?.response?.data?.msg);
       } else {
         toast.error(submit?.message);
       }

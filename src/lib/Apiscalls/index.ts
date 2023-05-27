@@ -193,7 +193,7 @@ export const CreateUser = async ({
   const accesstoken = Cookies.get("accesstoken");
   try {
     if (userrole !== "super_admin") {
-      throw { message: "You don't have access to perfom this active" };
+      throw { message: "You don't have access to perfom this action" };
     }
     let response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/signup`,
@@ -237,6 +237,31 @@ export const DeleteUser = async ({
     );
     if (response.data) {
       return response.data;
+    }
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// funtion for placingorder through admin dashboad
+type PlaceOrderProps = {
+  _id: string;
+  userrole: string;
+};
+export const PlaceOrderHandler = async ({ _id, userrole }: PlaceOrderProps) => {
+  const accesstoken = Cookies.get("accesstoken");
+  try {
+    if (userrole === "super_admin" || userrole === "editor") {
+      let response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/orders/place`,
+        { _id: _id },
+        { headers: { accesstoken } }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } else {
+      throw { message: "You don't have access to perfom this active" };
     }
   } catch (error: any) {
     return error;
